@@ -43,6 +43,11 @@
 //setprecision
 #include <iomanip>
 
+char stoc(std::string s)
+{
+    return s[0];
+}
+
 
 struct fraud_data{
     int ID;
@@ -70,21 +75,128 @@ struct fraud_data{
     bool is_fraud;
 };
 
+void fraud_data_info(fraud_data info)
+{
+    std::cout << "ID: " << info.ID << std::endl;
+    std::cout << "trans_date_trans_time: " << info.trans_date_trans_time << std::endl;
+    std::cout << std::setprecision(15) << "cc_num" << info.cc_num << std::endl;
+    std::cout << "merchant: "<<info.merchant << std::endl;
+    std::cout << "category: "<<info.category << std::endl;
+    std::cout << "amt: "<<info.amt << std::endl;
+    std::cout << "first: "<<info.first << std::endl;
+    std::cout << "last: "<<info.last << std::endl;
+    std::cout << "gender: "<<info.gender << std::endl;
+    std::cout << "street: "<<info.street << std::endl;
+    std::cout << "city: "<<info.city << std::endl;
+    std::cout << "state: "<<info.state << std::endl;
+    std::cout << "zip: "<<info.zip << std::endl;
+    std::cout << "loc_lat: "<<info.loc_lat << std::endl;
+    std::cout << "loc_long: "<<info.loc_long << std::endl;
+    std::cout << "city_pop: "<<info.city_pop << std::endl;
+    std::cout << "job: " <<info.job << std::endl;
+    std::cout << "dob: "<<info.dob << std::endl;
+    std::cout << "trans_num: "<<info.trans_num << std::endl;
+    std::cout << "unix_time: "<<info.unix_time << std::endl;
+    std::cout << "merch_lat: "<<info.merch_lat << std::endl;
+    std::cout << "merch_long: "<<info.merch_long << std::endl;
+    std::cout << "is_fraud: " <<info.is_fraud << std::endl;
+}
+
+
 int main(int argc, char const *argv[])
 {
     //file loading
-    std::fstream file("fraud_test.csv", std::ios::in);
+    std::fstream file("fraudTest.csv", std::ios::in);
+    
+    std::vector<fraud_data> v1;
+    fraud_data a;
+
     if(file.is_open())
     {
 
         std::string currentLine;
-
+        
         //while there are still lines to be found
+        bool newLine = true;
         while(getline(file,currentLine))
         {
+            if(newLine)
+            {
+                newLine = false;
+            }else{
+            fraud_data newFraud;
+            newFraud.ID = stoi(currentLine.substr(0, currentLine.find(',', 0)));
+            int begin = currentLine.find(',',0);
+            newFraud.trans_date_trans_time = currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1);
+            /*
+                begin+1, da dobijem mjesto nakon zareza nakon ida
+                find da nađem zarez koji se nalazi nakon tog mjesta(begin+1)
+                jer find vraća vrijednost mjesta, a ne postoji/nemogu se sjetiti funkcije koja mi dopušta da
+                radim substring od mjesta a do mjesta b (substring ide od mjesta a, n broj mjesta)
+                moram taj od tog finda oduzeti begin+1
+
+                rinse and repeat za svaki podatak jer ne vidim način kako da ovo pretvorim u petlju
+
+                jednog dana ću se smijati, sada samo plačem
+            */
+            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+            newFraud.cc_num = stod(currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1));
+            
+            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+            newFraud.merchant  = currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1);
+    	    //TODO: add logic for "fraud_ime neko,netki",
+
+
+            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+            newFraud.category  = currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1);
+            
+            /*
+            std::cout << newFraud.category << std::endl;
+            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+            newFraud.amt = stof(currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1));
+            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+            newFraud.first  = currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1);
+            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+            newFraud.last  = currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1);
+            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+            newFraud.gender = stoc(currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1));
+            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+            newFraud.street  = currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1);
+            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+            newFraud.city  = currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1);
+            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+            newFraud.state  = currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1);
+            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+            newFraud.zip  = stoi(currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1));
+            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+            newFraud.loc_lat = stof(currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1));
+            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+            newFraud.loc_long = stof(currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1));
+            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+            newFraud.city_pop = stof(currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1));
+            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+            newFraud.job = currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1);
+            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+            newFraud.dob = currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1);
+            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+            newFraud.trans_num = currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1);
+            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+            newFraud.unix_time = stod(currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1));
+            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+            newFraud.merch_lat = stof(currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1));
+            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+            newFraud.merch_long = stof(currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1));
+            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+            newFraud.is_fraud = stoi(currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1));*/
+            a = newFraud;
+            }
+            
             
         }
 
-    std::cout << "hello world" << std::endl;
+    }
+    std::cout << a.ID << std::endl;
+    std::cout << a.trans_date_trans_time << std::endl;
+
     return 0;
 }
