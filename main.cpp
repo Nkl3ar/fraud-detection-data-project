@@ -143,15 +143,21 @@ int main(int argc, char const *argv[])
             newFraud.cc_num = stod(currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1));
             
             begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+            if(currentLine[begin+1]=='"')
+            {
+                int postNavodnici = currentLine.find('"',begin+1);
+                postNavodnici = currentLine.find('"',postNavodnici+1);
+                newFraud.merchant = currentLine.substr(begin+1, currentLine.find(',',postNavodnici+1)-begin-1);
+            begin = begin+1+currentLine.find(',',postNavodnici+1)-begin-1;
+            }
+            else
+            {
             newFraud.merchant  = currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1);
-    	    //TODO: add logic for "fraud_ime neko,netki",
-
-
             begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+            }
+
             newFraud.category  = currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1);
             
-            /*
-            std::cout << newFraud.category << std::endl;
             begin = begin+1+currentLine.find(',',begin+1)-begin-1;
             newFraud.amt = stof(currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1));
             begin = begin+1+currentLine.find(',',begin+1)-begin-1;
@@ -174,9 +180,21 @@ int main(int argc, char const *argv[])
             newFraud.loc_long = stof(currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1));
             begin = begin+1+currentLine.find(',',begin+1)-begin-1;
             newFraud.city_pop = stof(currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1));
+
             begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+            if(currentLine[begin+1]=='"')
+            {
+                int postNavodnici = currentLine.find('"',begin+1);
+                postNavodnici = currentLine.find('"',postNavodnici+1);
+                newFraud.job = currentLine.substr(begin+1, currentLine.find(',',postNavodnici+1)-begin-1);
+            begin = begin+1+currentLine.find(',',postNavodnici+1)-begin-1;
+            }
+            else
+            {
             newFraud.job = currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1);
             begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+            }
+
             newFraud.dob = currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1);
             begin = begin+1+currentLine.find(',',begin+1)-begin-1;
             newFraud.trans_num = currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1);
@@ -187,16 +205,15 @@ int main(int argc, char const *argv[])
             begin = begin+1+currentLine.find(',',begin+1)-begin-1;
             newFraud.merch_long = stof(currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1));
             begin = begin+1+currentLine.find(',',begin+1)-begin-1;
-            newFraud.is_fraud = stoi(currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1));*/
+            newFraud.is_fraud = stoi(currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1));
+
+
             a = newFraud;
-            }
-            
-            
+            }                 
         }
 
     }
-    std::cout << a.ID << std::endl;
-    std::cout << a.trans_date_trans_time << std::endl;
 
+fraud_data_info(a);
     return 0;
 }
