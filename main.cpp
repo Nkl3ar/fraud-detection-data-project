@@ -1,17 +1,4 @@
-#include <iostream>
-
-//file loading
-#include <fstream>
-
-int main(int argc, char const *argv[])
-{
-    //file loading
-    std::fstream file("fraud_test.csv", std::ios::in);
-
-    if(file.is_open())
-    {
-
-        //define things in columns
+//define things in columns
 
         //columns:
         /*
@@ -43,12 +30,59 @@ int main(int argc, char const *argv[])
        // first row describes everything, skip it
        // columns are divided by ','
        // nothing at EOL
+
+
+#include <iostream>
+
+//vector
+#include <vector>
+
+//file loading
+#include <fstream>
+
+//setprecision
+#include <iomanip>
+
+
+struct fraud_data{
+    int ID;
+    std::string trans_date_trans_time; // (date, time, YYYY-MM-DD HH:MM:SS), should be something proper
+    double cc_num; // std::setprecision(15)
+    std::string merchant;
+    std::string category;
+    float amt;
+    std::string first;
+    std::string last;
+    char gender;
+    std::string street;
+    std::string city;
+    std::string state;
+    int zip;
+    float loc_lat;
+    float loc_long; //loc_long because putting just long makes me cry inside
+    int city_pop;
+    std::string job;
+    std::string dob; // (date, YYYY-MM-DD), should be something proper
+    std::string trans_num;
+    double unix_time;
+    float merch_lat;
+    float merch_long;
+    bool is_fraud;
+};
+
+int main(int argc, char const *argv[])
+{
+    //file loading
+    std::fstream file("fraud_test.csv", std::ios::in);
+    if(file.is_open())
+    {
+
         std::string currentLine;
 
         //while there are still lines to be found
         while(getline(file,currentLine))
         {
-
+            
         }
 
     std::cout << "hello world" << std::endl;
