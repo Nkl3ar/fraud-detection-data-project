@@ -79,7 +79,7 @@ void fraud_data_info(fraud_data info)
 {
     std::cout << "ID: " << info.ID << std::endl;
     std::cout << "trans_date_trans_time: " << info.trans_date_trans_time << std::endl;
-    std::cout << std::setprecision(15) << "cc_num" << info.cc_num << std::endl;
+    std::cout << std::setprecision(15) << "cc_num: " << info.cc_num << std::endl;
     std::cout << "merchant: "<<info.merchant << std::endl;
     std::cout << "category: "<<info.category << std::endl;
     std::cout << "amt: "<<info.amt << std::endl;
@@ -145,8 +145,7 @@ int main(int argc, char const *argv[])
             begin = begin+1+currentLine.find(',',begin+1)-begin-1;
             if(currentLine[begin+1]=='"')
             {
-                int postNavodnici = currentLine.find('"',begin+1);
-                postNavodnici = currentLine.find('"',postNavodnici+1);
+                int postNavodnici = currentLine.find('"',begin+2);
                 newFraud.merchant = currentLine.substr(begin+1, currentLine.find(',',postNavodnici+1)-begin-1);
             begin = begin+1+currentLine.find(',',postNavodnici+1)-begin-1;
             }
@@ -155,6 +154,27 @@ int main(int argc, char const *argv[])
             newFraud.merchant  = currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1);
             begin = begin+1+currentLine.find(',',begin+1)-begin-1;
             }
+            /*
+                Postoje zarezi u imenima.............................................................
+                nasreću možemo preduhitriti zarez jer je on između navodnika
+                ono što sljedi je rezulatat 15-20 minuta real time patnje, mind time pola sata ako ne i više
+                sigurno ima boljeg rješenja ali ako počnem razmišljati o njemu završiti ću u ustanovi neke vrste
+
+                radimo na principu
+                ako je idući char (begin+1) navodnik
+                    - tražimo idući navodnik koji se nalazi nakon trenutacanChar+1og mjesta
+                    - i onda tražimo zarez koji se nalazi nakon tog navodnika
+                da, mogao bih odmah samo +1 na mjesto navodnika
+                ali iskreno ovako sam siguran da nema još nekakvih lijepih stvari nakon njega
+                znajući ovaj ukleti dataset nakon navodnika možda se još nešto nalazi
+
+                da, vjerojatno sam mogao ovo pretvoriti u neku funkciju
+                ali se sada bojim dotaknuti ovaj mess jer znam da ću nekako nešto negdje breakati
+                plus koristi se samo još jedanput
+                u tom slučaju mogao sam ovaj cijeli find masterpiece pretvoriti u funkciju
+                ...i pisanjem ovog komentara dao sam samom sebi ideju kako bih to mogao napraviti
+                ako je ovaj komentar još uvijek tu znači da nisam imao vremena/volje/vremena i volje pretvoriti find u funkciju
+            */
 
             newFraud.category  = currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1);
             
@@ -184,8 +204,7 @@ int main(int argc, char const *argv[])
             begin = begin+1+currentLine.find(',',begin+1)-begin-1;
             if(currentLine[begin+1]=='"')
             {
-                int postNavodnici = currentLine.find('"',begin+1);
-                postNavodnici = currentLine.find('"',postNavodnici+1);
+                int postNavodnici = currentLine.find('"',begin+2);
                 newFraud.job = currentLine.substr(begin+1, currentLine.find(',',postNavodnici+1)-begin-1);
             begin = begin+1+currentLine.find(',',postNavodnici+1)-begin-1;
             }
