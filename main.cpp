@@ -105,6 +105,24 @@ void fraud_data_info(fraud_data info)
 
 int main(int argc, char const *argv[])
 {
+
+    /*
+    Idea for posterity sake:
+    multimap za trazenje po IDu, unordered za po cc_num i zip codeu
+    min_heap i max_heap za min i max IDa, cc_numa i zip codea
+
+    add function: ide u sve
+    delete function: briše iz svega
+
+    "Brisanje zapisa po ključu ili vrijednosti"
+    "Dodavanje zapisa po ključu ili vrijednosti"
+    bio bi incomplete data ubačen, but ok, napraviti će se metoda
+        -zapravo ne, može se nešto smisliti. biti će nezgrapno ali nešto će se smisliti
+
+    + extra metoda za complete data insertion čisto jer se može
+        -možda nema potrebe, ako idemo po stupcu id.......................
+        idk vidjet će se
+    */
     //file loading
     std::fstream file("fraudTest.csv", std::ios::in);
     
