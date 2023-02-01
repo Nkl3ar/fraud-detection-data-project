@@ -43,6 +43,13 @@
 
 //hashmap
 #include <map>
+
+//vector
+#include <vector>
+
+//heap stuff
+#include <algorithm>
+
 char stoc(std::string s)
 {
     return s[0];
@@ -107,41 +114,74 @@ void fraud_data_info(fraud_data info)
 class fraud_database{
     private:
         std::map<int, fraud_data> keyIsID;
-        std::map<double, fraud_data> keyIsCC_num;
-        std::map<double, fraud_data> keyIsCity_pop;
+        std::multimap<double, fraud_data> keyIsCC_num;
+        std::multimap<double, fraud_data> keyIsCity_pop;
+        //mislio sam imati max heap i min heap za sve ali zbog veličine dataseta to nije baš pametno
+        //plus map i multimap su već sorted
         fraud_data generateEmptyData(){
-
+            fraud_data empty;
+            empty.ID=returnMaxIDValue()+1;
+            //TODO: FLESH OUT TO ALL OTHER THINGS
+            return empty;
+            
         }
+        bool checkIDExistence(int ID){
+            auto search = keyIsID.find(ID);
+            if(search != keyIsID.end())
+                return true;
+            else
+                return false;
+        }
+        
     public:
-
+        int returnMaxIDValue()
+        {
+            return keyIsID.rbegin()->first;
+        }
+        std::vector<int> returnMaxIDValue(int N){
+            std::vector<int> maxIDs;
+            auto key = keyIsID.rbegin();
+            for(int i = 0; i<N; i++)
+            {
+                maxIDs.push_back(key->first);
+                key++;
+            }
+            return maxIDs;
+        }
+        fraud_data returnMaxIDData()
+        {
+            return keyIsID.rbegin()->second;
+        }
+        std::vector<fraud_data> returnMaxIDData(int N){
+            std::vector<fraud_data> maxIDs;
+            auto key = keyIsID.rbegin();
+            for(int i = 0; i<N; i++)
+            {
+                maxIDs.push_back(key->second);
+                key++;
+            }
+            return maxIDs;
+        }
         bool addByID(int ID, fraud_data data)
         {
-            //int ID overridea fraud_data data id
-            //check if id exists
-            //if not insert is allowed
-            //insert data
-            //else return 0
+            data.ID = ID;
+            if(checkIDExistence(ID) == true)
+                return 1;
+                
+            keyIsID.insert({data.ID,data});
+            keyIsCC_num.insert({data.cc_num,data});
+            keyIsCity_pop.insert({data.city_pop,data});
+            return 0;
         }
         bool addByID(int ID)
         {
-            //forward to addByID with int ID and fraud_data
+            return addByID(ID,generateEmptyData());
         }
         bool addByID(fraud_data data)
         {
-            //forward to addByID with int ID and fraud_data
+            return addByID(data.ID,data);
         }
-        bool addByCCNum(double cc_num, fraud_data data)
-        {}
-        bool addByCCNum(fraud_data data)
-        {}
-        bool addByCCNum(double cc_num)
-        {}
-        bool addByZipCode(int zipCode, fraud_data data)
-        {}
-        bool addByZipCode(int zipCode)
-        {}
-        bool addByZipCode(fraud_data data)
-        {}
+
         fraud_database(std::string filename)
         {
             std::fstream file("fraudTest.csv", std::ios::in);
@@ -262,11 +302,9 @@ class fraud_database{
                     keyIsID.insert({newFraud.ID,newFraud});
                     keyIsCC_num.insert({newFraud.cc_num,newFraud});
                     keyIsCity_pop.insert({newFraud.city_pop,newFraud});
-                    
-                    }             
                     }
                 }
-        }
+        }}
 
 
 };
@@ -303,6 +341,12 @@ if (auto search = mmap.find(2); search != mmap.end()){
         std::cout << "Not found\n";
         }    */
 
+    fraud_database fd("fraudTest.csv");
+    std::cout << fd.returnMaxIDValue() << std::endl;
+    fd.addByID(fd.returnMaxIDValue()+1);
+    fd.addByID(fd.returnMaxIDValue()+1);
+    fd.addByID(fd.returnMaxIDValue()+1);
+    std::cout << fd.returnMaxIDValue() << std::endl;
 
     return 0;
 }
