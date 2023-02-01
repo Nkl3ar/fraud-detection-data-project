@@ -31,11 +31,9 @@
        // columns are divided by ','
        // nothing at EOL
 
-
+//general stuff
 #include <iostream>
 
-//vector
-#include <vector>
 
 //file loading
 #include <fstream>
@@ -43,6 +41,8 @@
 //setprecision
 #include <iomanip>
 
+//hashmap
+#include <map>
 char stoc(std::string s)
 {
     return s[0];
@@ -64,7 +64,7 @@ struct fraud_data{
     std::string state;
     int zip;
     float loc_lat;
-    float loc_long; //loc_long because putting just long makes me cry inside
+    float loc_long; //loc_long because putting just long makes the compiler cry inside
     int city_pop;
     std::string job;
     std::string dob; // (date, YYYY-MM-DD), should be something proper
@@ -73,7 +73,9 @@ struct fraud_data{
     float merch_lat;
     float merch_long;
     bool is_fraud;
+
 };
+
 
 void fraud_data_info(fraud_data info)
 {
@@ -102,6 +104,172 @@ void fraud_data_info(fraud_data info)
     std::cout << "is_fraud: " <<info.is_fraud << std::endl;
 }
 
+class fraud_database{
+    private:
+        std::map<int, fraud_data> keyIsID;
+        std::map<double, fraud_data> keyIsCC_num;
+        std::map<double, fraud_data> keyIsCity_pop;
+        fraud_data generateEmptyData(){
+
+        }
+    public:
+
+        bool addByID(int ID, fraud_data data)
+        {
+            //int ID overridea fraud_data data id
+            //check if id exists
+            //if not insert is allowed
+            //insert data
+            //else return 0
+        }
+        bool addByID(int ID)
+        {
+            //forward to addByID with int ID and fraud_data
+        }
+        bool addByID(fraud_data data)
+        {
+            //forward to addByID with int ID and fraud_data
+        }
+        bool addByCCNum(double cc_num, fraud_data data)
+        {}
+        bool addByCCNum(fraud_data data)
+        {}
+        bool addByCCNum(double cc_num)
+        {}
+        bool addByZipCode(int zipCode, fraud_data data)
+        {}
+        bool addByZipCode(int zipCode)
+        {}
+        bool addByZipCode(fraud_data data)
+        {}
+        fraud_database(std::string filename)
+        {
+            std::fstream file("fraudTest.csv", std::ios::in);
+            if(file.is_open())
+            {
+                std::string currentLine;
+                
+                //while there are still lines to be found
+                bool newLine = true;
+                while(getline(file,currentLine))
+                {
+                    if(newLine)
+                    {
+                        newLine = false;
+                    }else{
+                    fraud_data newFraud;
+                    newFraud.ID = stoi(currentLine.substr(0, currentLine.find(',', 0)));
+                    int begin = currentLine.find(',',0);
+                    newFraud.trans_date_trans_time = currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1);
+                    /*
+                        begin+1, da dobijem mjesto nakon zareza nakon ida
+                        find da nađem zarez koji se nalazi nakon tog mjesta(begin+1)
+                        jer find vraća vrijednost mjesta, a ne postoji/nemogu se sjetiti funkcije koja mi dopušta da
+                        radim substring od mjesta a do mjesta b (substring ide od mjesta a, n broj mjesta)
+                        moram taj od tog finda oduzeti begin+1
+
+                        rinse and repeat za svaki podatak jer ne vidim način kako da ovo pretvorim u petlju
+
+                        jednog dana ću se smijati, sada samo plačem
+                    */
+                    begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+                    newFraud.cc_num = stod(currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1));
+                    
+                    begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+                    if(currentLine[begin+1]=='"')
+                    {
+                        int postNavodnici = currentLine.find('"',begin+2);
+                        newFraud.merchant = currentLine.substr(begin+1, currentLine.find(',',postNavodnici+1)-begin-1);
+                    begin = begin+1+currentLine.find(',',postNavodnici+1)-begin-1;
+                    }
+                    else
+                    {
+                    newFraud.merchant  = currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1);
+                    begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+                    }
+                    /*
+                        Postoje zarezi u imenima.............................................................
+                        nasreću možemo preduhitriti zarez jer je on između navodnika
+                        ono što sljedi je rezulatat 15-20 minuta real time patnje, mind time pola sata ako ne i više
+                        sigurno ima boljeg rješenja ali ako počnem razmišljati o njemu završiti ću u ustanovi neke vrste
+
+                        radimo na principu
+                        ako je idući char (begin+1) navodnik
+                            - tražimo idući navodnik koji se nalazi nakon trenutacanChar+1og mjesta
+                            - i onda tražimo zarez koji se nalazi nakon tog navodnika
+                        da, mogao bih odmah samo +1 na mjesto navodnika
+                        ali iskreno ovako sam siguran da nema još nekakvih lijepih stvari nakon njega
+                        znajući ovaj ukleti dataset nakon navodnika možda se još nešto nalazi
+
+                        da, vjerojatno sam mogao ovo pretvoriti u neku funkciju
+                        ali se sada bojim dotaknuti ovaj mess jer znam da ću nekako nešto negdje breakati
+                        plus koristi se samo još jedanput
+                        u tom slučaju mogao sam ovaj cijeli find masterpiece pretvoriti u funkciju
+                        ...i pisanjem ovog komentara dao sam samom sebi ideju kako bih to mogao napraviti
+                        ako je ovaj komentar još uvijek tu znači da nisam imao vremena/volje/vremena i volje pretvoriti find u funkciju
+                    */
+
+                    newFraud.category  = currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1);
+                    
+                    begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+                    newFraud.amt = stof(currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1));
+                    begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+                    newFraud.first  = currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1);
+                    begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+                    newFraud.last  = currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1);
+                    begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+                    newFraud.gender = stoc(currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1));
+                    begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+                    newFraud.street  = currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1);
+                    begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+                    newFraud.city  = currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1);
+                    begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+                    newFraud.state  = currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1);
+                    begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+                    newFraud.zip  = stoi(currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1));
+                    begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+                    newFraud.loc_lat = stof(currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1));
+                    begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+                    newFraud.loc_long = stof(currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1));
+                    begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+                    newFraud.city_pop = stof(currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1));
+
+                    begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+                    if(currentLine[begin+1]=='"')
+                    {
+                        int postNavodnici = currentLine.find('"',begin+2);
+                        newFraud.job = currentLine.substr(begin+1, currentLine.find(',',postNavodnici+1)-begin-1);
+                    begin = begin+1+currentLine.find(',',postNavodnici+1)-begin-1;
+                    }
+                    else
+                    {
+                    newFraud.job = currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1);
+                    begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+                    }
+
+                    newFraud.dob = currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1);
+                    begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+                    newFraud.trans_num = currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1);
+                    begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+                    newFraud.unix_time = stod(currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1));
+                    begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+                    newFraud.merch_lat = stof(currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1));
+                    begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+                    newFraud.merch_long = stof(currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1));
+                    begin = begin+1+currentLine.find(',',begin+1)-begin-1;
+                    newFraud.is_fraud = stoi(currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1));
+
+                    keyIsID.insert({newFraud.ID,newFraud});
+                    keyIsCC_num.insert({newFraud.cc_num,newFraud});
+                    keyIsCity_pop.insert({newFraud.city_pop,newFraud});
+                    
+                    }             
+                    }
+                }
+        }
+
+
+};
 
 int main(int argc, char const *argv[])
 {
@@ -123,134 +291,18 @@ int main(int argc, char const *argv[])
         -možda nema potrebe, ako idemo po stupcu id.......................
         idk vidjet će se
     */
-    //file loading
-    std::fstream file("fraudTest.csv", std::ios::in);
     
-    std::vector<fraud_data> v1;
-    fraud_data a;
-
-    if(file.is_open())
-    {
-
-        std::string currentLine;
-        
-        //while there are still lines to be found
-        bool newLine = true;
-        while(getline(file,currentLine))
-        {
-            if(newLine)
-            {
-                newLine = false;
-            }else{
-            fraud_data newFraud;
-            newFraud.ID = stoi(currentLine.substr(0, currentLine.find(',', 0)));
-            int begin = currentLine.find(',',0);
-            newFraud.trans_date_trans_time = currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1);
-            /*
-                begin+1, da dobijem mjesto nakon zareza nakon ida
-                find da nađem zarez koji se nalazi nakon tog mjesta(begin+1)
-                jer find vraća vrijednost mjesta, a ne postoji/nemogu se sjetiti funkcije koja mi dopušta da
-                radim substring od mjesta a do mjesta b (substring ide od mjesta a, n broj mjesta)
-                moram taj od tog finda oduzeti begin+1
-
-                rinse and repeat za svaki podatak jer ne vidim način kako da ovo pretvorim u petlju
-
-                jednog dana ću se smijati, sada samo plačem
-            */
-            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
-            newFraud.cc_num = stod(currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1));
-            
-            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
-            if(currentLine[begin+1]=='"')
-            {
-                int postNavodnici = currentLine.find('"',begin+2);
-                newFraud.merchant = currentLine.substr(begin+1, currentLine.find(',',postNavodnici+1)-begin-1);
-            begin = begin+1+currentLine.find(',',postNavodnici+1)-begin-1;
-            }
-            else
-            {
-            newFraud.merchant  = currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1);
-            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
-            }
-            /*
-                Postoje zarezi u imenima.............................................................
-                nasreću možemo preduhitriti zarez jer je on između navodnika
-                ono što sljedi je rezulatat 15-20 minuta real time patnje, mind time pola sata ako ne i više
-                sigurno ima boljeg rješenja ali ako počnem razmišljati o njemu završiti ću u ustanovi neke vrste
-
-                radimo na principu
-                ako je idući char (begin+1) navodnik
-                    - tražimo idući navodnik koji se nalazi nakon trenutacanChar+1og mjesta
-                    - i onda tražimo zarez koji se nalazi nakon tog navodnika
-                da, mogao bih odmah samo +1 na mjesto navodnika
-                ali iskreno ovako sam siguran da nema još nekakvih lijepih stvari nakon njega
-                znajući ovaj ukleti dataset nakon navodnika možda se još nešto nalazi
-
-                da, vjerojatno sam mogao ovo pretvoriti u neku funkciju
-                ali se sada bojim dotaknuti ovaj mess jer znam da ću nekako nešto negdje breakati
-                plus koristi se samo još jedanput
-                u tom slučaju mogao sam ovaj cijeli find masterpiece pretvoriti u funkciju
-                ...i pisanjem ovog komentara dao sam samom sebi ideju kako bih to mogao napraviti
-                ako je ovaj komentar još uvijek tu znači da nisam imao vremena/volje/vremena i volje pretvoriti find u funkciju
-            */
-
-            newFraud.category  = currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1);
-            
-            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
-            newFraud.amt = stof(currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1));
-            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
-            newFraud.first  = currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1);
-            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
-            newFraud.last  = currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1);
-            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
-            newFraud.gender = stoc(currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1));
-            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
-            newFraud.street  = currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1);
-            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
-            newFraud.city  = currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1);
-            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
-            newFraud.state  = currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1);
-            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
-            newFraud.zip  = stoi(currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1));
-            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
-            newFraud.loc_lat = stof(currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1));
-            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
-            newFraud.loc_long = stof(currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1));
-            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
-            newFraud.city_pop = stof(currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1));
-
-            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
-            if(currentLine[begin+1]=='"')
-            {
-                int postNavodnici = currentLine.find('"',begin+2);
-                newFraud.job = currentLine.substr(begin+1, currentLine.find(',',postNavodnici+1)-begin-1);
-            begin = begin+1+currentLine.find(',',postNavodnici+1)-begin-1;
-            }
-            else
-            {
-            newFraud.job = currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1);
-            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
-            }
-
-            newFraud.dob = currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1);
-            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
-            newFraud.trans_num = currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1);
-            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
-            newFraud.unix_time = stod(currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1));
-            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
-            newFraud.merch_lat = stof(currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1));
-            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
-            newFraud.merch_long = stof(currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1));
-            begin = begin+1+currentLine.find(',',begin+1)-begin-1;
-            newFraud.is_fraud = stoi(currentLine.substr(begin+1, currentLine.find(',',begin+1)-begin-1));
 
 
-            a = newFraud;
-            }                 
-        }
+    /*
 
-    }
+if (auto search = mmap.find(2); search != mmap.end()){
+        std::cout << "Found " << search->first << " " << '\n';
+        fraud_data_info(search->second);}
+    else
+        std::cout << "Not found\n";
+        }    */
 
-fraud_data_info(a);
+
     return 0;
 }
