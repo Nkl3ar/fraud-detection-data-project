@@ -344,6 +344,8 @@ class fraud_database{
             return allSuccess;
         }
 
+        //TODO: deleteByID
+
         fraud_database(std::string filename)
         {
             std::fstream file("fraudTest.csv", std::ios::in);
