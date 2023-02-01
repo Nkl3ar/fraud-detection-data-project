@@ -81,6 +81,34 @@ struct fraud_data{
     float merch_long;
     bool is_fraud;
 
+    bool operator==(fraud_data &x){
+        if(ID==x.ID)
+            if(cc_num==x.cc_num)
+                if(trans_date_trans_time==x.trans_date_trans_time)
+                    if(merchant==x.merchant)
+                        if(category==x.category)
+                            if(amt==x.amt)
+                                if(first==x.first)
+                                    if(last==x.last)
+                                        if(gender==x.gender)
+                                            if(street==x.street)
+                                                if(city==x.city)
+                                                    if(state==x.state)
+                                                        if(zip==x.zip)
+                                                            if(loc_lat==x.loc_lat)
+                                                                if(loc_long==x.loc_long)
+                                                                    if(city_pop==x.city_pop)
+                                                                        if(job==x.job)
+                                                                            if(dob==x.dob)
+                                                                                if(trans_num==x.trans_num)
+                                                                                    if(unix_time==x.unix_time)
+                                                                                        if(merch_lat==x.merch_lat)
+                                                                                            if(merch_long==x.merch_long)
+                                                                                                if(is_fraud==x.is_fraud)
+                                                                                                    return true;
+        return false;
+    }
+
 };
 
 
@@ -125,13 +153,6 @@ class fraud_database{
             return empty;
             
         }
-        bool checkIDExistence(int ID){
-            auto search = keyIsID.find(ID);
-            if(search != keyIsID.end())
-                return true;
-            else
-                return false;
-        }
         
     public:
         int returnMaxIDValue()
@@ -162,16 +183,71 @@ class fraud_database{
             }
             return maxIDs;
         }
+        std::pair<int,fraud_data> returnMaxIDandData(){
+            return *keyIsID.rbegin();
+        }
+        std::vector<std::pair<int,fraud_data>> returnMaxIDandData(int N){
+            std::vector<std::pair<int,fraud_data>> maxIDs;
+            auto key = keyIsID.rbegin();
+            for(int i = 0; i<N; i++)
+            {
+                maxIDs.push_back(*key);
+                key++;
+            }
+            return maxIDs;}
+        
+        int returnMinIDValue()
+        {
+            return keyIsID.begin()->first;
+        }
+        std::vector<int> returnMinIDValue(int N){
+            std::vector<int> maxIDs;
+            auto key = keyIsID.begin();
+            for(int i = 0; i<N; i++)
+            {
+                maxIDs.push_back(key->first);
+                key++;
+            }
+            return maxIDs;
+        }
+        fraud_data returnMinIDData()
+        {
+            return keyIsID.begin()->second;
+        }
+        std::vector<fraud_data> returnMinIDData(int N){
+            std::vector<fraud_data> maxIDs;
+            auto key = keyIsID.begin();
+            for(int i = 0; i<N; i++)
+            {
+                maxIDs.push_back(key->second);
+                key++;
+            }
+            return maxIDs;
+        }
+        std::pair<int,fraud_data> returnMinIDandData(){
+            return *keyIsID.begin();
+        }
+        std::vector<std::pair<int,fraud_data>> returnMinIDandData(int N){
+            std::vector<std::pair<int,fraud_data>> maxIDs;
+            auto key = keyIsID.begin();
+            for(int i = 0; i<N; i++)
+            {
+                maxIDs.push_back(*key);
+                key++;
+            }
+            return maxIDs;}
+
+        
         bool addByID(int ID, fraud_data data)
         {
             data.ID = ID;
-            if(checkIDExistence(ID) == true)
-                return 1;
+            if(searchByID(ID) == true)
+                return false;
                 
             keyIsID.insert({data.ID,data});
             keyIsCC_num.insert({data.cc_num,data});
             keyIsCity_pop.insert({data.city_pop,data});
-            return 0;
+            return true;
         }
         bool addByID(int ID)
         {
@@ -180,6 +256,92 @@ class fraud_database{
         bool addByID(fraud_data data)
         {
             return addByID(data.ID,data);
+        }
+        bool addByID(std::vector<fraud_data> data)
+        {
+            bool allSuccess = true;
+            while(!data.empty())
+            {
+                bool success = addByID(*data.rbegin());
+                data.pop_back();
+                if(success == false)
+                    allSuccess = false;
+            }
+            return allSuccess;
+        }
+        bool addByID(std::vector<int> IDs)
+        {
+            bool allSuccess = true;
+            while(!IDs.empty())
+            {
+                bool success = addByID(*IDs.rbegin());
+                IDs.pop_back();
+                if(success == false)
+                    allSuccess = false;
+            }
+            return allSuccess;
+        }
+        bool addByID(std::vector<std::pair<int,fraud_data>> IDAndData)
+        {
+            bool allSuccess = true;
+            while(!IDAndData.empty())
+            {
+                auto iteratorIDData = IDAndData.rbegin();
+                bool success = addByID(iteratorIDData->first,iteratorIDData->second);
+                IDAndData.pop_back();
+                if(success == false)
+                    allSuccess = false;
+            }
+            return allSuccess;
+        }
+
+        //nema smisla imati search po id i vrijednosti
+        bool searchByID(int ID)
+        {
+            auto search = keyIsID.find(ID);
+            if(search != keyIsID.end())
+                return true;
+            else
+                return false;
+
+        }
+        bool searchByID(fraud_data data)
+        {
+            
+            auto search = keyIsID.find(data.ID);
+            if(search != keyIsID.end()){
+                if(data==search->second)
+                    return true;
+                else
+                    return false;
+            }
+            else
+                return false;
+
+        }
+        bool searchByID(std::vector<fraud_data> data)
+        {
+            bool allSuccess = true;
+            while(!data.empty())
+            {
+                bool searchSuccess = searchByID(*data.rbegin());
+                if(searchSuccess == false)
+                    allSuccess = false;
+                data.pop_back();
+            }
+            return allSuccess;
+        }
+        bool searchByID(std::vector<int> IDs)
+        {
+            bool allSuccess = true;
+            while(!IDs.empty())
+            {
+                bool searchSuccess = searchByID(*IDs.rbegin());
+                if(searchSuccess == false)
+                    allSuccess = false;
+                IDs.pop_back();
+            }
+            return allSuccess;
         }
 
         fraud_database(std::string filename)
@@ -316,6 +478,7 @@ int main(int argc, char const *argv[])
     Idea for posterity sake:
     multimap za trazenje po IDu, unordered za po cc_num i zip codeu
     min_heap i max_heap za min i max IDa, cc_numa i zip codea
+        -- map je već sorted, što je veoma convenient
 
     add function: ide u sve
     delete function: briše iz svega
@@ -331,21 +494,9 @@ int main(int argc, char const *argv[])
     */
     
 
-
-    /*
-
-if (auto search = mmap.find(2); search != mmap.end()){
-        std::cout << "Found " << search->first << " " << '\n';
-        fraud_data_info(search->second);}
-    else
-        std::cout << "Not found\n";
-        }    */
-
     fraud_database fd("fraudTest.csv");
     std::cout << fd.returnMaxIDValue() << std::endl;
-    fd.addByID(fd.returnMaxIDValue()+1);
-    fd.addByID(fd.returnMaxIDValue()+1);
-    fd.addByID(fd.returnMaxIDValue()+1);
+    fd.addByID({555719,555720,555721});
     std::cout << fd.returnMaxIDValue() << std::endl;
 
     return 0;
