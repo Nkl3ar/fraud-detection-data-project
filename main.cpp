@@ -615,6 +615,66 @@ class fraud_database{
             }
             return MinCC_nums;}
 
+        
+        bool addByCC_num(double cc_num, fraud_data data)
+        {
+            data.cc_num = cc_num;
+            if(searchByID(data.ID) == true)
+                return false;
+                
+            keyIsID.insert({data.ID,data});
+            keyIsCC_num.insert({data.cc_num,data});
+            keyIsCity_pop.insert({data.city_pop,data});
+            return true;
+        }
+        bool addByCC_num(double cc_num)
+        {
+            return addByCC_num(cc_num,generateEmptyData());
+        }
+        bool addByCC_num(fraud_data data)
+        {
+            return addByCC_num(data.ID,data);
+        }
+        bool addByCC_num(std::vector<fraud_data> data)
+        {
+            bool allSuccess = true;
+            while(!data.empty())
+            {
+                bool success = addByCC_num(*data.rbegin());
+                data.pop_back();
+                if(success == false)
+                    allSuccess = false;
+            }
+            return allSuccess;
+        }
+        bool addByCC_num(std::vector<double> CCNums)
+        {
+            bool allSuccess = true;
+            while(!CCNums.empty())
+            {
+                bool success = addByCC_num(*CCNums.rbegin());
+                CCNums.pop_back();
+                if(success == false)
+                    allSuccess = false;
+            }
+            return allSuccess;
+        }
+        bool addByCC_num(std::vector<std::pair<double,fraud_data>> CCNumAndData)
+        {
+            bool allSuccess = true;
+            while(!CCNumAndData.empty())
+            {
+                auto iteratorCCNumAndData = CCNumAndData.rbegin();
+                bool success = addByCC_num(iteratorCCNumAndData->first,iteratorCCNumAndData->second);
+                CCNumAndData.pop_back();
+                if(success == false)
+                    allSuccess = false;
+            }
+            return allSuccess;
+        }
+
+        
+
 
         fraud_database(std::string filename)
         {
