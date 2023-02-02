@@ -380,27 +380,25 @@ class fraud_database{
         }
         bool searchByID(std::vector<fraud_data> data)
         {
-            bool allSuccess = true;
             while(!data.empty())
             {
                 bool searchSuccess = searchByID(*data.rbegin());
                 if(searchSuccess == false)
-                    allSuccess = false;
+                    return false;
                 data.pop_back();
             }
-            return allSuccess;
+            return true;
         }
         bool searchByID(std::vector<int> IDs)
         {
-            bool allSuccess = true;
             while(!IDs.empty())
             {
                 bool searchSuccess = searchByID(*IDs.rbegin());
                 if(searchSuccess == false)
-                    allSuccess = false;
+                    return false;
                 IDs.pop_back();
             }
-            return allSuccess;
+            return true;
         }
 
         //Nema smisla imati getIDByFraudData kada to možemo samo povući iz strukture preko fraud_data.id
@@ -671,6 +669,53 @@ class fraud_database{
                     allSuccess = false;
             }
             return allSuccess;
+        }
+
+        //opet, nema smisla imati search po cc_num i vrijednosti
+        bool searchByCC_num(double cc_num)
+        {
+            auto search = keyIsCC_num.find(cc_num);
+            if(search != keyIsCC_num.end())
+                return true;
+            else
+                return false;
+
+        }
+        bool searchByCC_num(fraud_data data)
+        {
+            
+            auto search = keyIsCC_num.find(data.cc_num);
+            if(search != keyIsCC_num.end()){
+                if(data==search->second)
+                    return true;
+                else
+                    return false;
+            }
+            else
+                return false;
+
+        }
+        bool searchByCC_num(std::vector<fraud_data> data)
+        {
+            while(!data.empty())
+            {
+                bool searchSuccess = searchByCC_num(*data.rbegin());
+                if(searchSuccess == false)
+                    return false;
+                data.pop_back();
+            }
+            return true;
+        }
+        bool searchByCC_num(std::vector<double> cc_nums)
+        {
+            while(!cc_nums.empty())
+            {
+                bool searchSuccess = searchByCC_num(*cc_nums.rbegin());
+                if(searchSuccess == false)
+                    return false;
+                cc_nums.pop_back();
+            }
+            return true;
         }
 
         
