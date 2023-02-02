@@ -449,7 +449,7 @@ class fraud_database{
                 {
                     break;
                 }
-                if(searchCC_num->second.ID!=ID)
+                if(searchCC_num->second.cc_num!=searchID->second.cc_num)
                     return false;
                 searchCC_num++;
             }
@@ -459,7 +459,7 @@ class fraud_database{
                 {
                     break;
                 }
-                if(searchCity_pop->second.ID!=ID)
+                if(searchCity_pop->second.city_pop!=searchID->second.city_pop)
                     return false;
                 searchCity_pop++;
             }
@@ -493,7 +493,7 @@ class fraud_database{
                 {
                     break;
                 }
-                if(searchCC_num->second.ID!=ID)
+                if(searchCC_num->second.cc_num!=searchID->second.cc_num)
                     return false;
                 searchCC_num++;
             }
@@ -503,7 +503,7 @@ class fraud_database{
                 {
                     break;
                 }
-                if(searchCity_pop->second.ID!=ID)
+                if(searchCity_pop->second.city_pop!=searchID->second.city_pop)
                     return false;
                 searchCity_pop++;
             }
@@ -717,6 +717,120 @@ class fraud_database{
             }
             return true;
         }
+
+
+        //Nema smisla imati getIDByFraudData kada to možemo samo povući iz strukture preko fraud_data.id
+        //također baš nema smisla imati getIDByID i getFraudDataByFraudData jer tada to više funkcionira kao search
+        //ako postoji vraćamo isti podatak, ako ne postoji vraćamo empty
+        fraud_data getFraudDataByCC_num(double cc_num)
+        {
+            if(searchByCC_num(cc_num) == true)
+            {
+                auto search = keyIsCC_num.find(cc_num);
+                return search->second;
+            }
+            else
+            {
+                return generateEmptyReturnData();
+            }
+        }
+        std::vector<fraud_data> getFraudDataByCC_num(std::vector<double> cc_nums)
+        {
+            std::vector<fraud_data> allData;
+            while(!cc_nums.empty())
+            {
+                if(searchByCC_num(*cc_nums.rbegin()) == true)
+                {
+                     auto search = keyIsCC_num.find(*cc_nums.rbegin());
+                     allData.push_back(search->second);
+                    }
+                 else
+                 {
+                     allData.push_back(generateEmptyReturnData());
+                 }
+                cc_nums.pop_back();
+            }
+            return allData;
+        }
+
+        bool deleteByCC_num(double cc_num){
+            auto searchCC_num= keyIsCC_num.find(cc_num);
+            if(searchCC_num == keyIsCC_num.end())
+            {
+                return false;
+            }
+
+            auto searchID = keyIsID.find(searchCC_num->second.ID);
+            if(searchID == keyIsID.end())
+            {
+                return false;
+            }
+            auto searchCity_pop = keyIsCity_pop.find(searchID->second.city_pop);
+            while(true)
+            {
+                if(searchCity_pop->second==searchCC_num->second)
+                {
+                    break;
+                }
+                if(searchCity_pop->second.city_pop!=searchCC_num->second.city_pop)
+                    return false;
+                searchCity_pop++;
+            }
+            keyIsID.erase(searchID);
+            keyIsCC_num.erase(searchCC_num);
+            keyIsCity_pop.erase(searchCity_pop);
+            return true;
+            }
+        bool deleteByCC_num(std::vector<int> IDs){
+            bool allSuccess = true;
+            while(!IDs.empty())
+            {
+                bool searchSuccess = deleteByID(*IDs.rbegin());
+                if(searchSuccess == false)
+                    allSuccess = false;
+                IDs.pop_back();
+            }
+            return allSuccess;}
+        bool deleteByCC_num(fraud_data data){
+            double cc_num = data.cc_num;
+            auto searchCC_num= keyIsCC_num.find(cc_num);
+            if(searchCC_num == keyIsCC_num.end() || searchCC_num->second!=data)
+            {
+                return false;
+            }
+            auto searchID = keyIsID.find(searchCC_num->second.ID);
+            if(searchID == keyIsID.end())
+            {
+                return false;
+            }
+            auto searchCity_pop = keyIsCity_pop.find(searchID->second.city_pop);
+            while(true)
+            {
+                if(searchCity_pop->second==searchCC_num->second)
+                {
+                    break;
+                }
+                if(searchCity_pop->second.city_pop!=searchCC_num->second.city_pop)
+                    return false;
+                searchCity_pop++;
+            }
+            keyIsID.erase(searchID);
+            keyIsCC_num.erase(searchCC_num);
+            keyIsCity_pop.erase(searchCity_pop);
+            return true;
+            }
+        bool deleteByCC_num(std::vector<fraud_data> data){
+            bool allSuccess = true;
+            while(!data.empty())
+            {
+                bool searchSuccess = deleteByID(*data.rbegin());
+                if(searchSuccess == false)
+                    allSuccess = false;
+                data.pop_back();
+            }
+            return allSuccess;
+        }
+
 
         
 
