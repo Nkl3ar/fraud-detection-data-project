@@ -108,6 +108,33 @@ struct fraud_data{
                                                                                                     return true;
         return false;
     }
+    bool operator!=(fraud_data &x){
+        if(ID==x.ID)
+            if(cc_num==x.cc_num)
+                if(trans_date_trans_time==x.trans_date_trans_time)
+                    if(merchant==x.merchant)
+                        if(category==x.category)
+                            if(amt==x.amt)
+                                if(first==x.first)
+                                    if(last==x.last)
+                                        if(gender==x.gender)
+                                            if(street==x.street)
+                                                if(city==x.city)
+                                                    if(state==x.state)
+                                                        if(zip==x.zip)
+                                                            if(loc_lat==x.loc_lat)
+                                                                if(loc_long==x.loc_long)
+                                                                    if(city_pop==x.city_pop)
+                                                                        if(job==x.job)
+                                                                            if(dob==x.dob)
+                                                                                if(trans_num==x.trans_num)
+                                                                                    if(unix_time==x.unix_time)
+                                                                                        if(merch_lat==x.merch_lat)
+                                                                                            if(merch_long==x.merch_long)
+                                                                                                if(is_fraud==x.is_fraud)
+                                                                                                    return false;
+        return true;
+    }
 
 };
 
@@ -146,10 +173,36 @@ class fraud_database{
         std::multimap<double, fraud_data> keyIsCity_pop;
         //mislio sam imati max heap i min heap za sve ali zbog veličine dataseta to nije baš pametno
         //plus map i multimap su već sorted
-        fraud_data generateEmptyData(){
+        fraud_data generateEmptyReturnData(){
             fraud_data empty;
+            empty.ID=-1;
+            empty.unix_time = 0;
+            empty.trans_date_trans_time = "0000-00-00 00:00:00";
+            empty.cc_num = 0;
+            empty.merchant = "";
+            empty.category = "";
+            empty.amt = 0;
+            empty.first = "";
+            empty.last = "";
+            empty.gender = 'M';
+            empty.street = "";
+            empty.city = "";
+            empty.state = "";
+            empty.zip = 0;
+            empty.loc_lat = 0;
+            empty.loc_long = 0;
+            empty.city_pop = 0;
+            empty.job = "";
+            empty.dob = "0000-00-00";
+            empty.trans_num = '0';
+            empty.merch_lat = 0;
+            empty.merch_long = 0;
+            empty.is_fraud = 0;
+            return empty;
+        }
+        fraud_data generateEmptyData(){
+            fraud_data empty = generateEmptyReturnData();
             empty.ID=returnMaxIDValue()+1;
-            //TODO: FLESH OUT TO ALL OTHER THINGS
             return empty;
             
         }
@@ -236,7 +289,6 @@ class fraud_database{
                 key++;
             }
             return maxIDs;}
-
         
         bool addByID(int ID, fraud_data data)
         {
@@ -344,7 +396,129 @@ class fraud_database{
             return allSuccess;
         }
 
-        //TODO: deleteByID
+        //Nema smisla imati getIDByFraudData kada to možemo samo povući iz strukture preko fraud_data.id
+        //također baš nema smisla imati getIDByID i getFraudDataByFraudData jer tada to više funkcionira kao search
+        //ako postoji vraćamo isti podatak, ako ne postoji vraćamo empty
+        fraud_data getFraudDataByID(int ID)
+        {
+            if(searchByID(ID) == true)
+            {
+                auto search = keyIsID.find(ID);
+                return search->second;
+            }
+            else
+            {
+                return generateEmptyReturnData();
+            }
+        }
+        std::vector<fraud_data> getFraudDataByID(std::vector<int> IDs)
+        {
+            std::vector<fraud_data> allData;
+            while(!IDs.empty())
+            {
+                if(searchByID(*IDs.rbegin()) == true)
+                {
+                     auto search = keyIsID.find(*IDs.rbegin());
+                     allData.push_back(search->second);
+                    }
+                 else
+                 {
+                     allData.push_back(generateEmptyReturnData());
+                 }
+                IDs.pop_back();
+            }
+            return allData;
+        }
+
+        bool deleteByID(int ID){
+            auto searchID = keyIsID.find(ID);
+            if(searchID == keyIsID.end())
+            {
+                return false;
+            }
+            auto searchCC_num = keyIsCC_num.find(searchID->second.cc_num);
+            auto searchCity_pop = keyIsCity_pop.find(searchID->second.city_pop);
+            while(true)
+            {
+                if(searchCC_num->second==searchID->second)
+                {
+                    break;
+                }
+                if(searchCC_num->second.ID!=ID)
+                    return false;
+                searchCC_num++;
+            }
+            while(true)
+            {
+                if(searchCity_pop->second==searchID->second)
+                {
+                    break;
+                }
+                if(searchCity_pop->second.ID!=ID)
+                    return false;
+                searchCity_pop++;
+            }
+            keyIsID.erase(searchID);
+            keyIsCC_num.erase(searchCC_num);
+            keyIsCity_pop.erase(searchCity_pop);
+            return true;
+            }
+        bool deleteByID(std::vector<int> IDs){
+            bool allSuccess = true;
+            while(!IDs.empty())
+            {
+                bool searchSuccess = deleteByID(*IDs.rbegin());
+                if(searchSuccess == false)
+                    allSuccess = false;
+                IDs.pop_back();
+            }
+            return allSuccess;}
+        bool deleteByID(fraud_data data){
+            int ID = data.ID;
+            auto searchID = keyIsID.find(ID);
+            if(searchID == keyIsID.end() || searchID->second!=data)
+            {
+                return false;
+            }
+            auto searchCC_num = keyIsCC_num.find(searchID->second.cc_num);
+            auto searchCity_pop = keyIsCity_pop.find(searchID->second.city_pop);
+            while(true)
+            {
+                if(searchCC_num->second==searchID->second)
+                {
+                    break;
+                }
+                if(searchCC_num->second.ID!=ID)
+                    return false;
+                searchCC_num++;
+            }
+            while(true)
+            {
+                if(searchCity_pop->second==searchID->second)
+                {
+                    break;
+                }
+                if(searchCity_pop->second.ID!=ID)
+                    return false;
+                searchCity_pop++;
+            }
+            keyIsID.erase(searchID);
+            keyIsCC_num.erase(searchCC_num);
+            keyIsCity_pop.erase(searchCity_pop);
+            return true;
+            }
+        bool deleteByID(std::vector<fraud_data> data){
+            bool allSuccess = true;
+            while(!data.empty())
+            {
+                bool searchSuccess = deleteByID(*data.rbegin());
+                if(searchSuccess == false)
+                    allSuccess = false;
+                data.pop_back();
+            }
+            return allSuccess;
+        }
+
 
         fraud_database(std::string filename)
         {
