@@ -208,6 +208,13 @@ class fraud_database{
         }
         
     public:
+
+        /*
+
+                ID
+        
+        */
+
         int returnMaxIDValue()
         {
             return keyIsID.rbegin()->first;
@@ -518,6 +525,95 @@ class fraud_database{
             }
             return allSuccess;
         }
+
+
+        /*
+        
+            cc_num
+
+        */
+
+        double returnMaxCC_numValue()
+        {
+            return keyIsCC_num.rbegin()->first;
+        }
+        std::vector<double> returnMaxCC_numValue(int N){
+            std::vector<double> MaxCC_nums;
+            auto key = keyIsCC_num.rbegin();
+            for(int i = 0; i<N; i++)
+            {
+                MaxCC_nums.push_back(key->first);
+                key++;
+            }
+            return MaxCC_nums;
+        }
+        fraud_data returnMaxCC_numData()
+        {
+            return keyIsCC_num.rbegin()->second;
+        }
+        std::vector<fraud_data> returnMaxCC_numData(int N){
+            std::vector<fraud_data> MaxCC_nums;
+            auto key = keyIsCC_num.rbegin();
+            for(int i = 0; i<N; i++)
+            {
+                MaxCC_nums.push_back(key->second);
+                key++;
+            }
+            return MaxCC_nums;
+        }
+        std::pair<double,fraud_data> returnMaxCC_numandData(){
+            return *keyIsCC_num.rbegin();
+        }
+        std::vector<std::pair<double,fraud_data>> returnMaxCC_numandData(int N){
+            std::vector<std::pair<double,fraud_data>> MaxCC_nums;
+            auto key = keyIsCC_num.rbegin();
+            for(int i = 0; i<N; i++)
+            {
+                MaxCC_nums.push_back(*key);
+                key++;
+            }
+            return MaxCC_nums;}
+        
+        double returnMinCC_numValue()
+        {
+            return keyIsCC_num.begin()->first;
+        }
+        std::vector<double> returnMinCC_numValue(int N){
+            std::vector<double> MinCC_nums;
+            auto key = keyIsCC_num.begin();
+            for(int i = 0; i<N; i++)
+            {
+                MinCC_nums.push_back(key->first);
+                key++;
+            }
+            return MinCC_nums;
+        }
+        fraud_data returnMinCC_numData()
+        {
+            return keyIsCC_num.begin()->second;
+        }
+        std::vector<fraud_data> returnMinCC_numData(int N){
+            std::vector<fraud_data> MinCC_nums;
+            auto key = keyIsCC_num.begin();
+            for(int i = 0; i<N; i++)
+            {
+                MinCC_nums.push_back(key->second);
+                key++;
+            }
+            return MinCC_nums;
+        }
+        std::pair<double,fraud_data> returnMinCC_numandData(){
+            return *keyIsCC_num.begin();
+        }
+        std::vector<std::pair<double,fraud_data>> returnMinCC_numandData(int N){
+            std::vector<std::pair<double,fraud_data>> MinCC_nums;
+            auto key = keyIsCC_num.begin();
+            for(int i = 0; i<N; i++)
+            {
+                MinCC_nums.push_back(*key);
+                key++;
+            }
+            return MinCC_nums;}
 
 
         fraud_database(std::string filename)
