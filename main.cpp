@@ -843,12 +843,15 @@ class fraud_database{
                     keyIsCity_pop.insert({newFraud.city_pop,newFraud});
                     }
                 }
-        }}
+        }
+        
+                file.close();
+        }
 
 
 };
 
-int main(int argc, char const *argv[])
+int main(void)
 {
 
     /*
@@ -870,13 +873,12 @@ int main(int argc, char const *argv[])
         idk vidjet će se
     */
     
-
     fraud_database fd("fraudTest.csv");
     std::cout << fd.returnMaxIDValue() << std::endl;
     fd.addByID({555719,555720,555721});
     std::cout << fd.returnMaxIDValue() << std::endl;
     fd.deleteByID(555721);
     std::cout << fd.returnMaxIDValue() << std::endl;
-
     return 0;
+
 }
