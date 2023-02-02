@@ -875,6 +875,8 @@ int main(int argc, char const *argv[])
     std::cout << fd.returnMaxIDValue() << std::endl;
     fd.addByID({555719,555720,555721});
     std::cout << fd.returnMaxIDValue() << std::endl;
+    fd.deleteByID(555721);
+    std::cout << fd.returnMaxIDValue() << std::endl;
 
     return 0;
 }
