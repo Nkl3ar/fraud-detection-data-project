@@ -993,6 +993,21 @@ int main(void)
     std::cout << fd.returnMaxIDValue() << std::endl;
     fd.deleteByID(555721);
     std::cout << fd.returnMaxIDValue() << std::endl;
+    
+
+    //odlučio provjeriti postoji li duplicate
+    std::vector<double> exist;
+    for(int i = 0; i <= fd.returnMaxIDValue(); i++)
+    {
+        fraud_data f = fd.getFraudDataByID(i);
+        if(std::find(exist.begin(), exist.end(), f.cc_num) != exist.end()) {
+            std::cout << std::setprecision(15) << "ccnum dupe found" << f.cc_num << std::endl;
+            break;
+        } else {
+            exist.push_back(f.cc_num);
+        }
+    }
+    exist.clear();
     return 0;
 
 }
