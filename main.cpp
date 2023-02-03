@@ -1,35 +1,37 @@
-//define things in columns
+//TODO: chrono time
 
-        //columns:
-        /*
-        0 - ID (basic int)
-        1 - trans_date_trans_time (date, time, YYYY-MM-DD HH:MM:SS)
-        2 - cc_num (int... but some are stored as "4.99234639806515E+018")
-        3 - merchant (string, all seem to have the fraud_ prefix)
+
+/*
+dataset info
+        0 - ID (int)
+        1 - trans_date_trans_time (date, time, YYYY-MM-DD HH:MM:SS, radi jednostavnosti ovdje se to sprema u string)
+        2 - cc_num (double, neki su brojevi spremljeni kao "4.99234639806515E+018" ali nasreću nema problema pri unosu)
+        3 - merchant (string, svi imaju fraud_ prefix)
         4 - category  (string)
         5 - amt (float)
         6 - first (string)
         7 - last  (string)
-        8 - gender (saved as M/F)
-        9 - street (string, contains house/apartment number)
+        8 - gender (M/F, spremljeno kao char)
+        9 - street (string, sadrži ulicu i kucni broj)
         10 - city (string)
-        11 - state (string, 2 letters)
+        11 - state (string, 2 slova)
         12 - zip (int)
         13 - lat (float)
         14 - long (float)
         15 - city_pop (int)
         16 - job (string)
-        17 - dob (date, YYYY-MM-DD)
-        18 - trans_num (hash?)
-        19 - unix_time (int or double, something wholenumber)
+        17 - dob (date, YYYY-MM-DD, radi jednostavnosti ovdje se to sprema u string)
+        18 - trans_num (hash??? idk, spremam kao string)
+        19 - unix_time (double)
         20 - merch_lat (float)
         21 - merch_long (float)
         22 - is_fraud (bool)
-        */
-       // 555720 rows
-       // first row describes everything, skip it
-       // columns are divided by ','
-       // nothing at EOL
+        
+        555720 redova
+        prvi slog je samo opis podataka
+        stupci su razdvojeni zarezom, ali ukoliko neki podatak sadrži zarez taj podatak je u dvostrukim navodnicima
+        nema EOL oznaka
+*/
 
 //general stuff
 #include <iostream>
@@ -171,7 +173,7 @@ class fraud_database{
         std::map<int, fraud_data> keyIsID;
         std::multimap<double, fraud_data> keyIsCC_num;
         std::multimap<double, fraud_data> keyIsCity_pop;
-        //mislio sam imati max heap i min heap za sve ali zbog veličine dataseta to nije baš pametno
+        //originalno sam mislio imati max heap i min heap za sve ali zbog veličine dataseta to nije baš pametno
         //plus map i multimap su već sorted
         fraud_data generateEmptyReturnData(){
             fraud_data empty;
@@ -781,14 +783,14 @@ class fraud_database{
             keyIsCity_pop.erase(searchCity_pop);
             return true;
             }
-        bool deleteByCC_num(std::vector<int> IDs){
+        bool deleteByCC_num(std::vector<int> CC_nums){
             bool allSuccess = true;
-            while(!IDs.empty())
+            while(!CC_nums.empty())
             {
-                bool searchSuccess = deleteByID(*IDs.rbegin());
+                bool searchSuccess = deleteByCC_num(*CC_nums.rbegin());
                 if(searchSuccess == false)
                     allSuccess = false;
-                IDs.pop_back();
+                CC_nums.pop_back();
             }
             return allSuccess;}
         bool deleteByCC_num(fraud_data data){
@@ -823,7 +825,7 @@ class fraud_database{
             bool allSuccess = true;
             while(!data.empty())
             {
-                bool searchSuccess = deleteByID(*data.rbegin());
+                bool searchSuccess = deleteByCC_num(*data.rbegin());
                 if(searchSuccess == false)
                     allSuccess = false;
                 data.pop_back();
@@ -832,7 +834,319 @@ class fraud_database{
         }
 
 
+     
+        /*
         
+            city_pop
+
+        */
+
+        double returnMaxCity_popValue()
+        {
+            return keyIsCity_pop.rbegin()->first;
+        }
+        std::vector<double> returnMaxCity_popValue(int N){
+            std::vector<double> MaxCity_pop;
+            auto key = keyIsCity_pop.rbegin();
+            for(int i = 0; i<N; i++)
+            {
+                MaxCity_pop.push_back(key->first);
+                key++;
+            }
+            return MaxCity_pop;
+        }
+        fraud_data returnMaxCity_popData()
+        {
+            return keyIsCity_pop.rbegin()->second;
+        }
+        std::vector<fraud_data> returnMaxCity_popData(int N){
+            std::vector<fraud_data> MaxCity_pop;
+            auto key = keyIsCity_pop.rbegin();
+            for(int i = 0; i<N; i++)
+            {
+                MaxCity_pop.push_back(key->second);
+                key++;
+            }
+            return MaxCity_pop;
+        }
+        std::pair<double,fraud_data> returnMaxCity_popandData(){
+            return *keyIsCity_pop.rbegin();
+        }
+        std::vector<std::pair<double,fraud_data>> returnMaxCity_popandData(int N){
+            std::vector<std::pair<double,fraud_data>> MaxCity_pop;
+            auto key = keyIsCity_pop.rbegin();
+            for(int i = 0; i<N; i++)
+            {
+                MaxCity_pop.push_back(*key);
+                key++;
+            }
+            return MaxCity_pop;}
+        
+        double returnMinCity_popValue()
+        {
+            return keyIsCity_pop.begin()->first;
+        }
+        std::vector<double> returnMinCity_popValue(int N){
+            std::vector<double> MinCity_pop;
+            auto key = keyIsCity_pop.begin();
+            for(int i = 0; i<N; i++)
+            {
+                MinCity_pop.push_back(key->first);
+                key++;
+            }
+            return MinCity_pop;
+        }
+        fraud_data returnMinCity_popData()
+        {
+            return keyIsCity_pop.begin()->second;
+        }
+        std::vector<fraud_data> returnMinCity_popData(int N){
+            std::vector<fraud_data> MinCity_pop;
+            auto key = keyIsCity_pop.begin();
+            for(int i = 0; i<N; i++)
+            {
+                MinCity_pop.push_back(key->second);
+                key++;
+            }
+            return MinCity_pop;
+        }
+        std::pair<double,fraud_data> returnMinCity_popandData(){
+            return *keyIsCity_pop.begin();
+        }
+        std::vector<std::pair<double,fraud_data>> returnMinCity_popandData(int N){
+            std::vector<std::pair<double,fraud_data>> MinCity_pop;
+            auto key = keyIsCity_pop.begin();
+            for(int i = 0; i<N; i++)
+            {
+                MinCity_pop.push_back(*key);
+                key++;
+            }
+            return MinCity_pop;}
+
+        
+        bool addByCity_pop(double city_pop, fraud_data data)
+        {
+            data.city_pop = city_pop;
+            if(searchByID(data.ID) == true)
+                return false;
+                
+            keyIsID.insert({data.ID,data});
+            keyIsCC_num.insert({data.cc_num,data});
+            keyIsCity_pop.insert({data.city_pop,data});
+            return true;
+        }
+        bool addByCity_pop(double city_pop)
+        {
+            return addByCity_pop(city_pop,generateEmptyData());
+        }
+        bool addByCity_pop(fraud_data data)
+        {
+            return addByCity_pop(data.ID,data);
+        }
+        bool addByCity_pop(std::vector<fraud_data> data)
+        {
+            bool allSuccess = true;
+            while(!data.empty())
+            {
+                bool success = addByCity_pop(*data.rbegin());
+                data.pop_back();
+                if(success == false)
+                    allSuccess = false;
+            }
+            return allSuccess;
+        }
+        bool addByCity_pop(std::vector<double> city_pop)
+        {
+            bool allSuccess = true;
+            while(!city_pop.empty())
+            {
+                bool success = addByCity_pop(*city_pop.rbegin());
+                city_pop.pop_back();
+                if(success == false)
+                    allSuccess = false;
+            }
+            return allSuccess;
+        }
+        bool addByCity_pop(std::vector<std::pair<double,fraud_data>> City_popAndData)
+        {
+            bool allSuccess = true;
+            while(!City_popAndData.empty())
+            {
+                auto iteratorCity_popAndData = City_popAndData.rbegin();
+                bool success = addByCity_pop(iteratorCity_popAndData->first,iteratorCity_popAndData->second);
+                City_popAndData.pop_back();
+                if(success == false)
+                    allSuccess = false;
+            }
+            return allSuccess;
+        }
+
+        //opet, nema smisla imati search po city_pop i vrijednosti
+        bool searchByCity_pop(double city_pop)
+        {
+            auto search = keyIsCity_pop.find(city_pop);
+            if(search != keyIsCity_pop.end())
+                return true;
+            else
+                return false;
+
+        }
+        bool searchByCity_pop(fraud_data data)
+        {
+            
+            auto search = keyIsCity_pop.find(data.city_pop);
+            if(search != keyIsCity_pop.end()){
+                if(data==search->second)
+                    return true;
+                else
+                    return false;
+            }
+            else
+                return false;
+
+        }
+        bool searchByCity_pop(std::vector<fraud_data> data)
+        {
+            while(!data.empty())
+            {
+                bool searchSuccess = searchByCity_pop(*data.rbegin());
+                if(searchSuccess == false)
+                    return false;
+                data.pop_back();
+            }
+            return true;
+        }
+        bool searchByCity_pop(std::vector<double> city_pop)
+        {
+            while(!city_pop.empty())
+            {
+                bool searchSuccess = searchByCity_pop(*city_pop.rbegin());
+                if(searchSuccess == false)
+                    return false;
+                city_pop.pop_back();
+            }
+            return true;
+        }
+
+
+        //Nema smisla imati getCity_popByFraudData kada to možemo samo povući iz strukture preko fraud_data.city_pop
+        //također baš nema smisla imati getCity_popByCity_pop jer tada to više funkcionira kao već implementirani search
+        //ako postoji vraćamo isti podatak (true), ako ne postoji vraćamo empty (false)
+        fraud_data getFraudDataByCity_pop(double city_pop)
+        {
+            if(searchByCity_pop(city_pop) == true)
+            {
+                auto search = keyIsCity_pop.find(city_pop);
+                return search->second;
+            }
+            else
+            {
+                return generateEmptyReturnData();
+            }
+        }
+        std::vector<fraud_data> getFraudDataByCity_pop(std::vector<double> city_pop)
+        {
+            std::vector<fraud_data> allData;
+            while(!city_pop.empty())
+            {
+                if(searchByCC_num(*city_pop.rbegin()) == true)
+                {
+                     auto search = keyIsCity_pop.find(*city_pop.rbegin());
+                     allData.push_back(search->second);
+                    }
+                 else
+                 {
+                     allData.push_back(generateEmptyReturnData());
+                 }
+                city_pop.pop_back();
+            }
+            return allData;
+        }
+
+        bool deleteByCity_pop(double city_pop){
+            
+            auto searchCity_pop = keyIsCity_pop.find(city_pop);
+            if(searchCity_pop == keyIsCity_pop.end())
+            {
+                return false;
+            }
+            
+            auto searchID = keyIsID.find(searchCity_pop->second.ID);
+            if(searchID == keyIsID.end())
+            {
+                return false;
+            }
+
+            auto searchCC_num = keyIsCC_num.find(searchCity_pop->second.cc_num);
+            while(true)
+            {
+                if(searchCity_pop->second==searchCC_num->second)
+                {
+                    break;
+                }
+                if(searchCity_pop->second.cc_num!=searchCC_num->second.cc_num)
+                    return false;
+                searchCC_num++;
+            }
+            keyIsID.erase(searchID);
+            keyIsCC_num.erase(searchCC_num);
+            keyIsCity_pop.erase(searchCity_pop);
+            return true;
+            }
+        bool deleteByCity_pop(std::vector<int> City_pops){
+            bool allSuccess = true;
+            while(!City_pops.empty())
+            {
+                bool searchSuccess = deleteByCity_pop(*City_pops.rbegin());
+                if(searchSuccess == false)
+                    allSuccess = false;
+                City_pops.pop_back();
+            }
+            return allSuccess;}
+        bool deleteByCity_pop(fraud_data data){
+            double city_pop = data.city_pop;
+            auto searchCity_pop = keyIsCity_pop.find(city_pop);
+            if(searchCity_pop == keyIsCity_pop.end() || searchCity_pop->second!=data)
+            {
+                return false;
+            }
+            
+            auto searchID = keyIsID.find(searchCity_pop->second.ID);
+            if(searchID == keyIsID.end())
+            {
+                return false;
+            }
+
+            auto searchCC_num = keyIsCC_num.find(searchCity_pop->second.cc_num);
+            while(true)
+            {
+                if(searchCity_pop->second==searchCC_num->second)
+                {
+                    break;
+                }
+                if(searchCity_pop->second.cc_num!=searchCC_num->second.cc_num)
+                    return false;
+                searchCC_num++;
+            }
+            keyIsID.erase(searchID);
+            keyIsCC_num.erase(searchCC_num);
+            keyIsCity_pop.erase(searchCity_pop);
+            return true;
+            }
+        bool deleteByCity_pop(std::vector<fraud_data> data){
+            bool allSuccess = true;
+            while(!data.empty())
+            {
+                bool searchSuccess = deleteByCity_pop(*data.rbegin());
+                if(searchSuccess == false)
+                    allSuccess = false;
+                data.pop_back();
+            }
+            return allSuccess;
+        }
+
+
+    
 
 
         fraud_database(std::string filename)
