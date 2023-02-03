@@ -740,8 +740,8 @@ public:
         return true;
     }
 
-    // Nema smisla imati getIDByFraudData kada to možemo samo povući iz strukture preko fraud_data.id
-    // također baš nema smisla imati getIDByID i getFraudDataByFraudData jer tada to više funkcionira kao search
+    // Nema smisla imati getCC_numByFraudData kada to možemo samo povući iz strukture preko fraud_data.cc_num
+    // također baš nema smisla imati getCC_numByCC_num i getFraudDataByFraudData jer tada to više funkcionira kao search
     // ako postoji vraćamo isti podatak, ako ne postoji vraćamo empty
     fraud_data getFraudDataByCC_num(double cc_num)
     {
