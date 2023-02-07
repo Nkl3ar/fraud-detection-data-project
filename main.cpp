@@ -36,8 +36,6 @@ dataset info
 #include <iostream>
 
 // file loading
-
-//file loading
 #include <fstream>
 
 // setprecision
