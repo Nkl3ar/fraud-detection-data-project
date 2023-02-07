@@ -103,3 +103,4 @@ i onda tražimo zarez koji se nalazi nakon tog navodnika
 
 Kompleksnost je kao kod dodavanja n podataka.
 
+
