@@ -38,7 +38,7 @@ Ako tražimo N podataka samo spremimo tih N podataka u neku vrstu arraya (najbol
 
 Tijekom pisanja koda nisam bio siguran moramo li vratiti sami podatak ili možemo li samo vratiti je li pretraživanje bilo uspješno. Na kraju sam se odlučio za vraćanje boola, te samo napravio odvojenu funkciju get koja vraća sami podatak.
 
-Kompleksnost je log n.
+Kompleksnost je log n, gdje je n veličina strukture.
 
 # Dodavanje
 
@@ -50,6 +50,11 @@ Ako ne postoji, dodajemo ih u sve tri strukture.
 
 Tu nam uvelike pomaže to što nam je value cijeli red jer možemo iz njega izvući potrebne podatake.
 
+
+Kompleksnost je 3 log trenutačne veličine strukture.
+
+3 jer moramo triputa raditi insert, jednom za svaku strukturu.
+
 # Brisanje
 
 Drugi najbolniji dio ovog projekta.
@@ -59,6 +64,8 @@ Brisanje kod obične mape je veoma jednostavno jer se nema duplikata keya.
 Problem nastaje kod multimape jer moramo biti jako oprezni da slučajno ne obrišemo krivi podatak.
 
 Stoga moramo raditi provjere je li value koji je povezan uz ključ kojeg brišemo iz jedne strukture isti kao value iz druge strukture.
+
+Kompleksnost je logaritmična radi potrebe za traženjem podataka.
 
 # Učitavanje samog dataseta
 
@@ -92,4 +99,7 @@ stoga radimo na principu ako je idući char (begin+1) navodnik
 tražimo idući navodnik koji se nalazi nakon trenutacanChar+1og mjesta
 
 i onda tražimo zarez koji se nalazi nakon tog navodnika
+
+
+Kompleksnost je kao kod dodavanja n podataka.
 
