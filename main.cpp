@@ -1432,7 +1432,7 @@ int main(void)
         fraud_data f = fd.getFraudDataByID(i);
         if (std::find(exist.begin(), exist.end(), f.cc_num) != exist.end())
         {
-            std::cout << std::setprecision(15) << "ccnum dupe found" << f.cc_num << std::endl;
+            std::cout << std::setprecision(15) << "ccnum dupe found " << f.cc_num << std::endl;
             break;
         }
         else
@@ -1443,6 +1443,6 @@ int main(void)
     exist.clear();*/
     
 
-
+    
     return 0;
 }
