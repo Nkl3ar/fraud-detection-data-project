@@ -401,10 +401,7 @@ public:
         auto search = keyIsID.find(data.ID);
         if (search != keyIsID.end())
         {
-            if (data == search->second)
                 return true;
-            else
-                return false;
         }
         else
             return false;
@@ -730,10 +727,7 @@ public:
         auto search = keyIsCC_num.find(data.cc_num);
         if (search != keyIsCC_num.end())
         {
-            if (data == search->second)
                 return true;
-            else
-                return false;
         }
         else
             return false;
@@ -1366,6 +1360,12 @@ int main(void)
     rezultat = fd.returnMaxCC_numData(1000);
     std::cout << "kod dohvaćanja 1000 podataka" << std::endl;
     stopAndPrintFunctionTime("returnMaxCC_numandData");
+
+    
+    startTime();
+    std::cout << fd.searchByCC_num(rezultat) << std::endl;
+    std::cout << "kod traženja 1000 podataka" << std::endl;
+    stopAndPrintFunctionTime("searchByCC_num");
 
     startTime();
     fd.deleteByCC_num(rezultat);
