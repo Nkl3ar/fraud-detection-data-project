@@ -834,6 +834,16 @@ public:
     {
         double cc_num = data.cc_num;
         auto searchCC_num = keyIsCC_num.find(cc_num);
+        while (true)
+        {
+            if (data == searchCC_num->second)
+            {
+                break;
+            }
+            if (searchCC_num->second.cc_num != data.city_pop)
+                return false;
+            searchCC_num++;
+        }
         if (searchCC_num == keyIsCC_num.end() || searchCC_num->second != data)
         {
             return false;
@@ -1154,6 +1164,18 @@ public:
     {
         double city_pop = data.city_pop;
         auto searchCity_pop = keyIsCity_pop.find(city_pop);
+
+        while (true)
+        {
+            if (data == searchCity_pop->second)
+            {
+                break;
+            }
+            if (searchCity_pop->second.city_pop != data.city_pop)
+                return false;
+            searchCity_pop++;
+        }
+
         if (searchCity_pop == keyIsCity_pop.end() || searchCity_pop->second != data)
         {
             return false;
