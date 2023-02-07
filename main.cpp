@@ -1246,7 +1246,7 @@ public:
                         plus koristi se samo još jedanput
                         u tom slučaju mogao sam ovaj cijeli find masterpiece pretvoriti u funkciju
                         ...i pisanjem ovog komentara dao sam samom sebi ideju kako bih to mogao napraviti
-                        ako je ovaj komentar još uvijek tu znači da nisam imao vremena/volje/vremena i volje pretvoriti find u funkciju
+                        ako je ovaj komentar još uvijek tu znači da nisam imao vremena pretvoriti find u funkciju
                     */
 
                     newFraud.category = currentLine.substr(begin + 1, currentLine.find(',', begin + 1) - begin - 1);
