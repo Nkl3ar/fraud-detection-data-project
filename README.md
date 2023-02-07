@@ -53,3 +53,43 @@ Tu nam uvelike pomaže to što nam je value cijeli red jer možemo iz njega izvu
 # Brisanje
 
 Drugi najbolniji dio ovog projekta.
+
+Brisanje kod obične mape je veoma jednostavno jer se nema duplikata keya.
+
+Problem nastaje kod multimape jer moramo biti jako oprezni da slučajno ne obrišemo krivi podatak.
+
+Stoga moramo raditi provjere je li value koji je povezan uz ključ kojeg brišemo iz jedne strukture isti kao value iz druge strukture.
+
+# Učitavanje samog dataseta
+
+Najbolniji dio projekta.
+
+Postoje tri ključna problema kod učitavanja csva.
+
+Header koji opisuje podatke, neki podatci sadrže zareze (iako zarez razdvaja stupce) te to što ne postoji funkcija koja omogućuje vađenje substringa od mjesta a do mjesta b.
+
+Headera se lako riješimo, samo ignoriramo prvo liniju koju pročitamo.
+
+Za substring:
+
+imamo varijablu begin koja sprema mjesto zadnjeg zareza.
+
+Zatim radimo begin+1, da dobijemo mjesto nakon zareza
+
+find da nađem zarez koji se nalazi nakon tog mjesta(begin+1)
+
+pošto find vraća vrijednost mjesta, moramo tog finda oduzeti begin+1 kako bi dobili broj znakova
+
+te begin+1 i tu duljinu šaljemo metodu substring kako bi dobili željeni podataka
+
+
+Za zareze:
+
+na sreću ti podatci su unutar navodnika
+
+stoga radimo na principu ako je idući char (begin+1) navodnik
+
+tražimo idući navodnik koji se nalazi nakon trenutacanChar+1og mjesta
+
+i onda tražimo zarez koji se nalazi nakon tog navodnika
+

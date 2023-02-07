@@ -1191,7 +1191,7 @@ public:
             bool newLine = true;
             while (getline(file, currentLine))
             {
-                if (newLine)
+                if (newLine) //služi za ignoriranje headera csv datoteke
                 {
                     newLine = false;
                 }
@@ -1228,10 +1228,10 @@ public:
                         begin = begin + 1 + currentLine.find(',', begin + 1) - begin - 1;
                     }
                     /*
-                        Postoje zarezi u imenima.............................................................
+                        Postoje zarezi u imenima...
                         nasreću možemo preduhitriti zarez jer je on između navodnika
-                        ono što sljedi je rezulatat 15-20 minuta real time patnje, mind time pola sata ako ne i više
-                        sigurno ima boljeg rješenja ali ako počnem razmišljati o njemu završiti ću u ustanovi neke vrste
+                        ono što sljedi je rezulatat 15-20 minuta patnje
+                        sigurno ima boljeg rješenja ali ne želim početi razmišljati o njemu
 
                         radimo na principu
                         ako je idući char (begin+1) navodnik
