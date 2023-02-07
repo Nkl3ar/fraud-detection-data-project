@@ -50,10 +50,6 @@ dataset info
 // find
 #include <algorithm>
 
-char stoc(std::string s)
-{
-    return s[0];
-}
 
 struct fraud_data
 {
@@ -207,6 +203,11 @@ private:
         fraud_data empty = generateEmptyReturnData();
         empty.ID = returnMaxIDValue() + 1;
         return empty;
+    }
+        
+    char stoc(std::string s)
+    {
+        return s[0];
     }
 
 public:
