@@ -1313,25 +1313,6 @@ public:
 int main(void)
 {
 
-    /*
-    Idea for posterity sake:
-    multimap za trazenje po IDu, unordered za po cc_num i zip codeu
-    min_heap i max_heap za min i max IDa, cc_numa i zip codea
-        -- map je već sorted, što je veoma convenient
-
-    add function: ide u sve
-    delete function: briše iz svega
-
-    "Brisanje zapisa po ključu ili vrijednosti"
-    "Dodavanje zapisa po ključu ili vrijednosti"
-    bio bi incomplete data ubačen, but ok, napraviti će se metoda
-        -zapravo ne, može se nešto smisliti. biti će nezgrapno ali nešto će se smisliti
-
-    + extra metoda za complete data insertion čisto jer se može
-        -možda nema potrebe, ako idemo po stupcu id.......................
-        idk vidjet će se
-    */
-
     fraud_database fd("fraudTest.csv");
     std::cout << fd.returnMaxIDValue() << std::endl;
     fd.addByID({555719, 555720, 555721});
@@ -1339,7 +1320,7 @@ int main(void)
     fd.deleteByID(555721);
     std::cout << fd.returnMaxIDValue() << std::endl;
 
-    // odlučio provjeriti postoji li duplicate
+    // odlučio sam provjeriti postoji li duplicate
     std::vector<double> exist;
     for (int i = 0; i <= fd.returnMaxIDValue(); i++)
     {
@@ -1355,5 +1336,7 @@ int main(void)
         }
     }
     exist.clear();
+
+
     return 0;
 }
