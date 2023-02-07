@@ -401,6 +401,7 @@ public:
         auto search = keyIsID.find(data.ID);
         if (search != keyIsID.end())
         {
+            if(data==search->second)
                 return true;
         }
         else
@@ -727,7 +728,17 @@ public:
         auto search = keyIsCC_num.find(data.cc_num);
         if (search != keyIsCC_num.end())
         {
+
+        while (true)
+        {
+            if (data == search->second)
+            {
                 return true;
+            }
+            if (search->second.cc_num != data.cc_num)
+                return false;
+            search++;
+        }
         }
         else
             return false;
@@ -834,20 +845,23 @@ public:
     {
         double cc_num = data.cc_num;
         auto searchCC_num = keyIsCC_num.find(cc_num);
+        
+        if (searchCC_num == keyIsCC_num.end())
+        {
+            return false;
+        }
+
         while (true)
         {
             if (data == searchCC_num->second)
             {
                 break;
             }
-            if (searchCC_num->second.cc_num != data.city_pop)
+            if (searchCC_num->second.cc_num != data.cc_num)
                 return false;
             searchCC_num++;
         }
-        if (searchCC_num == keyIsCC_num.end() || searchCC_num->second != data)
-        {
-            return false;
-        }
+
         auto searchID = keyIsID.find(searchCC_num->second.ID);
         if (searchID == keyIsID.end())
         {
@@ -1052,10 +1066,17 @@ public:
         auto search = keyIsCity_pop.find(data.city_pop);
         if (search != keyIsCity_pop.end())
         {
+
+        while (true)
+        {
             if (data == search->second)
+            {
                 return true;
-            else
+            }
+            if (search->second.city_pop != data.city_pop)
                 return false;
+            search++;
+        }
         }
         else
             return false;
@@ -1164,6 +1185,11 @@ public:
     {
         double city_pop = data.city_pop;
         auto searchCity_pop = keyIsCity_pop.find(city_pop);
+        
+        if (searchCity_pop == keyIsCity_pop.end())
+        {
+            return false;
+        }
 
         while (true)
         {
@@ -1176,10 +1202,6 @@ public:
             searchCity_pop++;
         }
 
-        if (searchCity_pop == keyIsCity_pop.end() || searchCity_pop->second != data)
-        {
-            return false;
-        }
 
         auto searchID = keyIsID.find(searchCity_pop->second.ID);
         if (searchID == keyIsID.end())
@@ -1390,7 +1412,7 @@ int main(void)
     stopAndPrintFunctionTime("searchByCC_num");
 
     startTime();
-    fd.deleteByCC_num(rezultat);
+    std::cout << fd.deleteByCC_num(rezultat) << std::endl;
     std::cout << "kod brisanja 1000 podataka" << std::endl;
     stopAndPrintFunctionTime("deleteByCC_num");
     
@@ -1419,6 +1441,7 @@ int main(void)
         }
     }
     exist.clear();*/
+    
 
 
     return 0;
