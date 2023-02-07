@@ -1,4 +1,3 @@
-// TODO: chrono time
 
 /*
 dataset info
@@ -52,6 +51,23 @@ dataset info
 
 // chrono time
 #include <chrono>
+using namespace std::chrono;
+
+std::chrono::time_point<std::chrono::high_resolution_clock> start;
+void startTime()
+{
+    start = high_resolution_clock::now();
+}
+void stopAndPrintFunctionTime(std::string function_name)
+{
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(stop - start);
+    std::cout << "Izvršavanje funkcije " << function_name << " je trajalo " << duration.count() << " mikrosekundi" << std::endl;
+    start = high_resolution_clock::now();
+
+}
+
+
 
 
 struct fraud_data
@@ -137,6 +153,7 @@ struct fraud_data
         return true;
     }
 };
+
 
 void fraud_data_info(fraud_data info)
 {
@@ -1315,15 +1332,56 @@ public:
 
 int main(void)
 {
-
+    startTime();
     fraud_database fd("fraudTest.csv");
+    stopAndPrintFunctionTime("incijalni unos podatka");
+    startTime();
     std::cout << fd.returnMaxIDValue() << std::endl;
+    stopAndPrintFunctionTime("returnMaxIDValue");
+    startTime();
     fd.addByID({555719, 555720, 555721});
+    stopAndPrintFunctionTime("addByID");
+    startTime();
     std::cout << fd.returnMaxIDValue() << std::endl;
+    stopAndPrintFunctionTime("returnMaxIDValue");
+    startTime();
     fd.deleteByID(555721);
+    stopAndPrintFunctionTime("deleteByID");
+    startTime();
     std::cout << fd.returnMaxIDValue() << std::endl;
+    stopAndPrintFunctionTime("returnMaxIDValue");
+    startTime();
+    std::cout << fd.returnMinIDValue() << std::endl;
+    stopAndPrintFunctionTime("returnMinIDValue");
+    startTime();
+    std::cout << fd.searchByID(123) << std::endl;
+    stopAndPrintFunctionTime("searchByID");
+    
+    startTime();
+    std::cout << fd.returnMaxCC_numValue() << std::endl;
+    stopAndPrintFunctionTime("returnMaxCC_numValue");
 
-    // odlučio sam provjeriti postoji li duplicate
+    std::vector<fraud_data> rezultat;
+    startTime();
+    rezultat = fd.returnMaxCC_numData(1000);
+    std::cout << "kod dohvaćanja 1000 podataka" << std::endl;
+    stopAndPrintFunctionTime("returnMaxCC_numandData");
+
+    startTime();
+    fd.deleteByCC_num(rezultat);
+    std::cout << "kod brisanja 1000 podataka" << std::endl;
+    stopAndPrintFunctionTime("deleteByCC_num");
+    
+    startTime();
+    std::cout << fd.returnMaxCC_numValue() << std::endl;
+    stopAndPrintFunctionTime("returnMaxCC_numValue");
+
+
+
+
+
+    // odlučio sam provjeriti postoji li duplicate cc_num
+    /*
     std::vector<double> exist;
     for (int i = 0; i <= fd.returnMaxIDValue(); i++)
     {
@@ -1338,7 +1396,7 @@ int main(void)
             exist.push_back(f.cc_num);
         }
     }
-    exist.clear();
+    exist.clear();*/
 
 
     return 0;
