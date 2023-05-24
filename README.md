@@ -4,6 +4,8 @@ Za projekt smo dobili zadatak izvući podatke iz dataseta (kojeg ne smijemo mije
 Te radnje su pretraživanje, brisanje, dodavanje, dohvaćanje najvećih i najmanjih vrijednosti.
 Sve radnje se moraju odvijati što brže moguće te mora biti omogućeno dohvaćanje n podataka.
 
+Dozvoljeno je dupliciranje podataka.
+
 
 Link na korišteni dataset: https://www.kaggle.com/kartik2112/fraud-detection
 
