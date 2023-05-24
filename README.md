@@ -1,5 +1,13 @@
 # fraud-detection-data-project
 
+Za projekt smo dobili zadatak izvući podatke iz dataseta (kojeg ne smijemo mijenjati) te odabrati 3 različita stupca nad kojima ćemo vršiti razne radnje.
+Te radnje su pretraživanje, brisanje, dodavanje, dohvaćanje najvećih i najmanjih vrijednosti.
+Sve radnje se moraju odvijati što brže moguće te mora biti omogućeno dohvaćanje n podataka.
+
+
+Link na korišteni dataset: https://www.kaggle.com/kartik2112/fraud-detection
+
+
 # Korištene strukture i spremanje podataka
 Korištene su strukture Map i multimap gdje je key stupac nad kojim vršimo zadanu radnju (pretraživanje, min, max) a value je cijeli red spremljen u ručno napisanu strukturu fraud_data. Svi su podatci spremljeni u što smislenijem obliku, izuzev vremena koji je spremljen kao string.
 
